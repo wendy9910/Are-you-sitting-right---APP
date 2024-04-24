@@ -536,7 +536,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
   @override
   void initState() {
     super.initState();
-    // 監聽藍牙適配器狀態
+    // 監聽藍牙適配器狀態!
     _adapterStateSubscription = FlutterBluePlus.adapterState.listen((state) {
       setState(() {
         _adapterState = state;
@@ -552,22 +552,42 @@ class _BluetoothPageState extends State<BluetoothPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
-    // 根據藍牙狀態決定顯示哪個頁面
-    if (_adapterState == BluetoothAdapterState.on) {
-      content = const ScanScreen(); // 藍牙開啟時顯示掃描頁面
-    } else {
-      content =
-          BluetoothOffScreen(adapterState: _adapterState); // 藍牙關閉時顯示藍牙關閉頁面
-    }
+    Widget screen = _adapterState == BluetoothAdapterState.on
+        ? const ScanScreen()
+        : BluetoothOffScreen(adapterState: _adapterState);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Bluetooth Setting'),
-      ),
-      body: Center(
-        child: content,
-      ),
+    return MaterialApp(
+      color: Colors.lightBlue,
+      home: screen,
+      navigatorObservers: [BluetoothAdapterStateObserver()],
     );
+  }
+}
+
+class BluetoothAdapterStateObserver extends NavigatorObserver {
+  StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    super.didPush(route, previousRoute);
+    if (route.settings.name == '/DeviceScreen') {
+      // Start listening to Bluetooth state changes when a new route is pushed
+      _adapterStateSubscription ??=
+          FlutterBluePlus.adapterState.listen((state) {
+        if (state != BluetoothAdapterState.on) {
+          // Pop the current route if Bluetooth is off
+          //如果藍牙關閉則彈出目前路線
+          navigator?.pop();
+        }
+      });
+    }
+  }
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    super.didPop(route, previousRoute);
+    // Cancel the subscription when the route is popped
+    _adapterStateSubscription?.cancel();
+    _adapterStateSubscription = null;
   }
 }
