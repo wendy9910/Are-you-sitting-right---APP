@@ -120,7 +120,7 @@ class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //var appState = context.watch<MyAppState>();
-    String backgroundImage = 'assets/images/background.jpg';
+    String backgroundImage = 'assets/images/BG_blue.jpg';
 
     return Container(
       decoration: BoxDecoration(
@@ -210,11 +210,11 @@ class BigCard extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center, // 居中對齊
       children: <Widget>[
-        Image.asset(
-          'assets/images/cat.png', // 確保這個路徑和檔案名稱與實際匹配
-          fit: BoxFit.cover, // 根據需要選擇合適的 BoxFit 屬性
-        ),
-        SizedBox(height: 20),
+        // Image.asset(
+        //   'assets/images/cat.png', // 確保這個路徑和檔案名稱與實際匹配
+        //   fit: BoxFit.cover, // 根據需要選擇合適的 BoxFit 屬性
+        // ),
+        SizedBox(height: 40),
         Text(
           'Are you sitting right?',
           textAlign: TextAlign.center,
